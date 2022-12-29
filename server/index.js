@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import postRoutes from './routes/posts.js';
 import userRouter from "./routes/user.js";
+import googleRouter from './routes/google.cjs'
 
 // MONGO DB CONNECTION
 const app = express();
@@ -14,7 +15,12 @@ app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
 app.use('/posts', postRoutes);
-app.use("/user", userRouter);
+app.use('/user', userRouter);
+app.use(googleRouter);
+
+app.get('/',(_,res) => {
+  res.sendFile(__dirname + "../../client/components/Form/Form.js")
+})
 
 const CONNECTION_URL = 'mongodb+srv://ezenia:ezenia@cluster0.1ctvyjc.mongodb.net/?retryWrites=true&w=majority';
 const PORT = process.env.PORT|| 5000;

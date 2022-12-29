@@ -6,12 +6,14 @@ import FileBase from 'react-file-base64';
 import { createPost, updatePost } from '../../actions/posts';
 import useStyles from './styles';
 
+// FORM
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({ title: '', message: '', tags: '', selectedFile: '' });
   const post = useSelector((state) => (currentId ? state.posts.find((message) => message._id === currentId) : null));
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
+  const formElem = document.querySelector('form');
 
   useEffect(() => {
     if (post) setPostData(post);
@@ -27,6 +29,10 @@ const Form = ({ currentId, setCurrentId }) => {
 
     if (currentId === 0) {
       dispatch(createPost({ ...postData, name: user?.result?.name }));
+      await fetch('/upload', {
+        method: 'POST',
+        body: new FormData(formElem),
+      });
       clear();
     } else {
       dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
@@ -43,6 +49,16 @@ const Form = ({ currentId, setCurrentId }) => {
       </Paper>
     );
   }
+
+  // const formElem = document.querySelector('form');
+  // formElem.addEventListener('submit', async (e) => {
+  //     console.log("form submitted")
+  //   e.preventDefault();
+  //   await fetch('/upload', {
+  //     method: 'POST',
+  //     body: new FormData(formElem),
+  //   });
+  // });
 
   return (
     <Paper className={classes.paper}>
